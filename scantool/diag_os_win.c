@@ -400,12 +400,12 @@ unsigned long diag_os_getms(void) {
 
 
 //millisecond stopwatch, arbitrarily resettable
-unsigned long diag_os_chronoms(unsigned long treset) {
-	static unsigned long offset=0;
+long diag_os_chronoms(long treset) {
+	static long offset=0;
 
 	offset += treset;
 
-	return (unsigned long) (GetTickCount() - offset);
+	return GetTickCount() - offset;
 }
 
 //get high resolution timestamp

@@ -125,7 +125,7 @@ unsigned long long diag_os_hrtus(unsigned long long hrdelta);
 //				//will return elapsed time since chronoms(0) was called.
 //Internally, chronoms must adjust the offset before calculating the
 //return value.
-unsigned long diag_os_chronoms(unsigned long treset);
+long diag_os_chronoms(long treset);
 
 
 /* mutex wrapper stuff.

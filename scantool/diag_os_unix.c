@@ -720,37 +720,34 @@ unsigned long long diag_os_hrtus(unsigned long long hrdelta) {
 }
 
 //arbitrarily resettable stopwatch. See comments in diag_os.h
-unsigned long diag_os_chronoms(unsigned long treset) {
+long diag_os_chronoms(long treset) {
+	long rv;
 #if defined(_POSIX_TIMERS) && (SEL_HRT==S_POSIX || SEL_HRT==S_AUTO)
 	static struct timespec offset={0,0};
 	struct timespec curtime;
-	unsigned long rv;
 
 	clock_gettime(CLOCK_REALTIME, &curtime);
 
 	offset.tv_sec += treset / 1000;
 	offset.tv_nsec += (treset % 1000) * 1000*1000;
 
-	rv = (curtime.tv_nsec / 1000000)+(curtime.tv_sec * 1000);
-	rv -= (offset.tv_nsec / 1000000)+(offset.tv_sec * 1000);
-	return rv;
+	rv = (curtime.tv_nsec / 1000000)+((unsigned long)curtime.tv_sec * 1000);
+	rv -= (offset.tv_nsec / 1000000)+((unsigned long)offset.tv_sec * 1000);
 #else
 	//as we did for diag_os_getms(), we'll use gettimeofday.
 	//But in this case it's not a big problem
 	static struct timeval offset={0,0};
 	struct timeval tv;
-	unsigned long rv;
 
 	gettimeofday(&tv, NULL);
 
 	offset.tv_sec += treset / 1000;
 	offset.tv_usec += (treset % 1000);
 
-	rv = (tv.tv_usec/1000) + (tv.tv_sec * 1000);
-	rv -= (offset.tv_usec/1000) + (offset.tv_sec * 1000);
-
-	return rv;
+	rv = (tv.tv_usec/1000) + ((unsigned long)tv.tv_sec * 1000);
+	rv -= (offset.tv_usec/1000) + ((unsigned long)offset.tv_sec * 1000);
 #endif // _POSIX_TIMERS
+	return rv;
 }
 
 diag_mtx *diag_os_newmtx(void) {
